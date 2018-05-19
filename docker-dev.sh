@@ -13,7 +13,7 @@ run_func () {
 
 handle_int() { 
   trap handle_double_int INT
-  sleep .33
+  sleep 1
   trap handle_int INT
   echo "INT caught, running...\n"
   run_func
@@ -26,7 +26,7 @@ handle_double_int() {
   
 
 filename='Dockerfile'
-OG_VALUE=`md5 -q $filename`
+OG_VALUE=`openssl md5 $filename`
 echo "og value is $OG_VALUE"
 
 trap handle_int INT
@@ -34,11 +34,11 @@ trap handle_int INT
 while :
 do
   sleep 1 
-  TEMP_VALUE=`md5 -q $filename`  
+  TEMP_VALUE=`openssl md5 $filename`  
   if [ "$TEMP_VALUE" != "$OG_VALUE" ]
   then
     echo "temp value, $TEMP_VALUE, $OG_VALUE"
-    OG_VALUE=`md5 -q $filename`
+    OG_VALUE=`openssl md5 $filename`
     run_func
   fi
 done
