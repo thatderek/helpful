@@ -13,7 +13,6 @@ while true;do
   while inotifywait -q -e modify $1 ; do echo "supp" > /dev/null; done
   echo -e "\n\n=======\n"
   docker run --rm \
-    -e "INSTANCE_ID=lollol" \
     -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
     -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
     -v `pwd`:/var/task \
