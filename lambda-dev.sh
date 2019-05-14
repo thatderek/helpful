@@ -4,28 +4,23 @@
 # Use this script to monitor for saves
 # and then run your code in a clone of the lambda env.
 #
-function_name='app'
-handler_name='lambcidocker'
-filename="$function_name.py"
-OG_VALUE=`md5 -q $filename`
-REGION=us-east-1
-echo "og value is $OG_VALUE"
+# call this app with the first argument being the name of the file to watch.
 
-
-while :
-do
-  sleep 2
-  TEMP_VALUE=`md5 -q $filename`  
-  if [ "$TEMP_VALUE" != "$OG_VALUE" ]
-  then
-    echo "temp value, $TEMP_VALUE, $OG_VALUE"
-    OG_VALUE=`md5 -q $filename`
-    payload=$(cat example_payload.json)
-    docker run --rm -v "$PWD":/var/task \
-      -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
-      -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-      -e AWS_REGION=$REGION \
-      -e AWS_ACCOUNT_ID=$AWS_ACCOUNT_NUMBER \
-      lambci/lambda:python2.7 $function_name.$handler_name
-  fi
+while true;do
+  while inotifywait -q -e modify $1 ; do echo "supp" > /dev/null; done
+  echo -e "\n\n=======\n"
+  docker run --rm \
+    -e "INSTANCE_ID=lollol" \
+    -e "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" \
+    -e "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" \
+    -v `pwd`:/var/task \
+    -v ~/.aws/:/home/sbx_user1051/.aws:ro \
+    lambci/lambda:python3.7 lambda_function.lambda_handler
 done
+~                                                                                                                  
+~                                                                                                                  
+~                                                                                                                  
+~                                                                                                                  
+~                                                                                                                  
+~                                                                                                                  
+~              
