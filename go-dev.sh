@@ -2,25 +2,26 @@
 #
 # Writing something in go?
 # Use this script to monitor for saves
-# and then run your code in a clone of the lambda env.
+# and then run your code.
 #
 # call this app with the first argument being the name of the file to watch.
+# if your app needs a subcommand, make that the second positional argument. 
+# ex: go-dev.sh main.go [sub-command]
 #
-# If you need to pass it data like you might get from a CWE or whatnot, save 
-# it to the same directory as event_payload.json
 
 APP_NAME=`pwd | tr '/' '\n'`
 APP_NAME=`echo "${APP_NAME##*$'\n'}"`
+go run $APP_NAME &
+GO_PID=`echo $!`
 
 while true;do
   while inotifywait -q -e modify $1 ; do echo "supp" > /dev/null; done
+
   echo -e "\n\n=======\n"
-  go build && time ./$APP_NAME 
+  pkill -P $GO_PID
+  kill -9 $GO_PID
+  date
+  go run $APP_NAME $2 &
+  GO_PID=`echo $!`
+
 done
-~                                                                                                                  
-~                                                                                                                  
-~                                                                                                                  
-~                                                                                                                  
-~                                                                                                                  
-~                                                                                                                  
-~              
